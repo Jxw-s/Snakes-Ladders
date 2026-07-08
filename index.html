@@ -3,62 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Snakes & Ladders</title>
+    <title>Snakes & Ladders – 2 Player</title>
     <style>
-        /* ---- 全局重置 & 字体 ---- */
         * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
         body {
-            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
             background: #0b2a1e;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
+            font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
             padding: 16px;
         }
-
-        /* ---- 游戏容器（卡片） ---- */
         .game-wrapper {
             background: #fef3c7;
             border-radius: 40px;
             padding: 24px 20px 28px;
-            max-width: 500px;
+            max-width: 520px;
             width: 100%;
             box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 0 2px #f59e0b inset;
             position: relative;
-            transition: 0.3s;
         }
-        .game-wrapper h1 {
-            font-size: 30px;
+        h1 {
+            font-size: 28px;
             color: #451a03;
             text-align: center;
             text-shadow: 0 2px 0 #fbbf24;
-            letter-spacing: 1px;
-            margin-bottom: 4px;
+            margin-bottom: 2px;
         }
         .sub-title {
             text-align: center;
             color: #78350f;
             font-weight: 600;
             font-size: 13px;
-            margin-bottom: 14px;
-            letter-spacing: 0.5px;
+            margin-bottom: 12px;
         }
-
-        /* ---- 状态栏 ---- */
         .status-panel {
             background: #78350f;
             border-radius: 60px;
-            padding: 10px 18px;
+            padding: 10px 16px;
             display: flex;
             justify-content: space-between;
             color: #fef3c7;
             font-weight: bold;
-            font-size: 17px;
+            font-size: 16px;
             box-shadow: inset 0 -4px 0 #451a03;
-            margin-bottom: 16px;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+            gap: 6px;
         }
-        .status-panel span {
+        .status-panel .turn-indicator {
             background: #451a03;
             padding: 2px 16px;
             border-radius: 40px;
@@ -66,67 +60,68 @@
             align-items: center;
             gap: 6px;
         }
-
-        /* ---- 棋盘 ---- */
+        .status-panel .dice-info {
+            background: #451a03;
+            padding: 2px 16px;
+            border-radius: 40px;
+        }
         .board {
             display: grid;
             grid-template-columns: repeat(10, 1fr);
-            gap: 4px;
+            gap: 3px;
             background: #92400e;
-            padding: 8px;
-            border-radius: 28px;
+            padding: 6px;
+            border-radius: 24px;
             box-shadow: inset 0 -6px 0 #78350f;
-            margin-bottom: 18px;
+            margin-bottom: 16px;
             aspect-ratio: 1 / 1;
         }
         .cell {
             background: #fde68a;
-            border-radius: 8px;
+            border-radius: 6px;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 11px;
+            font-size: 10px;
             font-weight: bold;
             color: #451a03;
             position: relative;
             aspect-ratio: 1 / 1;
-            transition: background 0.15s;
             box-shadow: 0 2px 0 #b45309;
         }
         .cell .num {
-            font-size: 10px;
-            opacity: 0.8;
             position: absolute;
-            top: 2px;
-            left: 4px;
+            top: 1px;
+            left: 3px;
+            font-size: 8px;
+            opacity: 0.7;
         }
         .cell .piece {
             position: absolute;
-            width: 64%;
-            height: 64%;
-            background: radial-gradient(circle at 30% 30%, #fbbf24, #d97706);
+            width: 28%;
+            height: 28%;
             border-radius: 50%;
             border: 2px solid #fff;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.4);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.4);
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 22px;
+            font-size: 14px;
             line-height: 1;
-            transition: all 0.15s ease;
+            transition: 0.1s ease;
             z-index: 2;
         }
+        .cell .piece.p1 { background: #fbbf24; top: 10%; left: 10%; }
+        .cell .piece.p2 { background: #3b82f6; bottom: 10%; right: 10%; }
         .cell.snake { background: #fca5a5; }
         .cell.ladder { background: #86efac; }
         .cell .icon-indicator {
             position: absolute;
-            font-size: 22px;
-            opacity: 0.9;
+            font-size: 18px;
+            opacity: 0.8;
             bottom: 0;
             right: 2px;
         }
-
-        /* ---- 骰子区域 ---- */
         .dice-area {
             display: flex;
             justify-content: center;
@@ -136,26 +131,24 @@
         }
         .dice-box {
             background: #fff;
-            width: 72px;
-            height: 72px;
-            border-radius: 20px;
-            box-shadow: 0 8px 0 #b45309, 0 4px 12px rgba(0,0,0,0.2);
+            width: 70px;
+            height: 70px;
+            border-radius: 18px;
+            box-shadow: 0 6px 0 #b45309, 0 4px 12px rgba(0,0,0,0.2);
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 48px;
+            font-size: 44px;
             font-weight: bold;
             color: #451a03;
             transition: 0.1s;
         }
-
-        /* ---- 按钮 ---- */
         .btn {
             border: none;
             color: #fff;
-            font-size: 22px;
+            font-size: 20px;
             font-weight: bold;
-            padding: 14px 20px;
+            padding: 12px 20px;
             border-radius: 60px;
             cursor: pointer;
             transition: all 0.05s linear;
@@ -183,10 +176,9 @@
             margin-top: 6px;
         }
         .btn-group .btn { flex: 1; margin-top: 0; }
-
         .message-box {
-            margin-top: 14px;
-            font-size: 18px;
+            margin-top: 12px;
+            font-size: 17px;
             font-weight: 600;
             color: #451a03;
             text-align: center;
@@ -196,485 +188,397 @@
             border-radius: 40px;
             box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
         }
-
-        /* ---- 规则弹窗 ---- */
-        .overlay {
-            position: fixed;
+        .winner-overlay {
+            position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.6);
-            backdrop-filter: blur(4px);
-            display: flex;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(3px);
+            border-radius: 40px;
+            display: none;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            z-index: 999;
-            padding: 20px;
-            animation: fadeIn 0.3s ease;
+            color: #fff;
+            z-index: 20;
+            padding: 30px;
         }
-        .overlay.hidden { display: none; }
-        .rules-card {
-            background: #fef3c7;
-            max-width: 440px;
-            width: 100%;
-            border-radius: 48px;
-            padding: 32px 28px 28px;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
-            position: relative;
-            max-height: 90vh;
-            overflow-y: auto;
+        .winner-overlay.show { display: flex; }
+        .winner-overlay h2 {
+            font-size: 38px;
+            color: #ffd700;
+            text-shadow: 0 0 30px rgba(255,215,0,0.5);
         }
-        .rules-card h2 {
-            font-size: 28px;
-            color: #451a03;
-            text-align: center;
-            margin-bottom: 12px;
+        .winner-overlay p {
+            font-size: 22px;
+            margin: 10px 0 20px;
         }
-        .rules-card .rules-content {
-            color: #451a03;
-            font-size: 16px;
-            line-height: 1.6;
-            margin-bottom: 20px;
-        }
-        .rules-card .rules-content p { margin-bottom: 8px; }
-        .rules-card .rules-content ul {
-            padding-left: 20px;
-            margin: 8px 0 12px;
-        }
-        .rules-card .rules-content li { margin-bottom: 4px; }
-        .rules-card .btn {
-            background: #16a34a;
-            box-shadow: 0 8px 0 #166534;
-            font-size: 20px;
-        }
-        .rules-card .btn:active { box-shadow: 0 2px 0 #166534; }
-        .rules-card .close-btn {
-            position: absolute;
-            top: 16px;
-            right: 20px;
-            background: none;
-            border: none;
-            font-size: 28px;
-            color: #451a03;
-            cursor: pointer;
-            opacity: 0.7;
-            transition: 0.2s;
-        }
-        .rules-card .close-btn:hover { opacity: 1; }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
-        /* ---- 响应式 ---- */
         @media (max-width: 480px) {
             .game-wrapper { padding: 16px 12px 20px; }
-            .cell .num { font-size: 8px; }
-            .cell .piece { font-size: 18px; }
-            .dice-box { width: 60px; height: 60px; font-size: 38px; }
-            .btn { font-size: 18px; padding: 12px; }
-            .rules-card { padding: 24px 18px; }
-            .rules-card h2 { font-size: 24px; }
-            .status-panel { font-size: 14px; padding: 8px 12px; }
+            .cell .num { font-size: 6px; }
+            .cell .piece { font-size: 11px; width: 24%; height: 24%; }
+            .dice-box { width: 60px; height: 60px; font-size: 36px; }
+            .btn { font-size: 17px; padding: 10px; }
+            .status-panel { font-size: 14px; }
         }
     </style>
 </head>
 <body>
-    <!-- 游戏主体 -->
-    <div class="game-wrapper" id="app">
-        <h1 id="gameTitle">🐍 Snakes & Ladders</h1>
-        <div class="sub-title" id="subTitle">India · Pakistan · Bangladesh Classic</div>
+<div class="game-wrapper" id="app">
+    <h1 id="gameTitle">🐍 Snakes & Ladders</h1>
+    <div class="sub-title" id="subTitle">2 Players · Classic</div>
 
-        <div class="status-panel">
-            <span><span id="posLabel">📍 Position</span> <span id="posDisplay">1</span></span>
-            <span><span id="diceLabel">🎲 Dice</span> <span id="diceDisplay">-</span></span>
-        </div>
-
-        <div class="board" id="board"></div>
-
-        <div class="dice-area">
-            <div class="dice-box" id="diceFace">⚀</div>
-        </div>
-
-        <div class="btn-group">
-            <button class="btn" id="rollBtn">🎲 Roll Dice</button>
-            <button class="btn btn-secondary" id="rulesBtn">📖 Rules</button>
-        </div>
-        <button class="btn btn-secondary" id="resetBtn" style="margin-top:8px;">🔄 New Game</button>
-
-        <div class="message-box" id="message">Click Roll Dice to start!</div>
+    <div class="status-panel">
+        <div class="turn-indicator" id="turnIndicator">🎯 <span id="turnText">Player 1</span></div>
+        <div class="dice-info">🎲 <span id="diceDisplay">-</span></div>
     </div>
 
-    <!-- 规则弹窗 -->
-    <div class="overlay" id="rulesOverlay">
-        <div class="rules-card">
-            <button class="close-btn" id="closeRulesBtn">✕</button>
-            <h2 id="rulesTitle">📖 How to Play</h2>
-            <div class="rules-content" id="rulesContent">
-                <!-- 由 JS 动态填充多语言 -->
-            </div>
-            <button class="btn" id="startGameBtn">🎯 Start Game</button>
-        </div>
+    <div class="board" id="board"></div>
+
+    <div class="dice-area">
+        <div class="dice-box" id="diceFace">⚀</div>
     </div>
 
-    <script>
-        (function() {
-            // ---------- 多语言翻译 ----------
-            const LANG = {
-                en: {
-                    title: '🐍 Snakes & Ladders',
-                    sub: 'India · Pakistan · Bangladesh Classic',
-                    posLabel: '📍 Position',
-                    diceLabel: '🎲 Dice',
-                    rollBtn: '🎲 Roll Dice',
-                    resetBtn: '🔄 New Game',
-                    rulesBtn: '📖 Rules',
-                    startBtn: '🎯 Start Game',
-                    closeBtn: '✕',
-                    rulesTitle: '📖 How to Play',
-                    rulesText: `
-                        <p><strong>Goal:</strong> Be the first player to reach square <strong>100</strong>.</p>
-                        <p><strong>How to play:</strong></p>
-                        <ul>
-                            <li>Click <strong>Roll Dice</strong> to roll a 1–6.</li>
-                            <li>Your piece moves forward by the number shown.</li>
-                            <li>If you land at the bottom of a <strong>ladder 🪜</strong>, climb up!</li>
-                            <li>If you land on a <strong>snake's head 🐍</strong>, slide down to its tail.</li>
-                        </ul>
-                        <p><strong>Tip:</strong> Landing exactly on 100 wins. Overshooting keeps you in place.</p>
-                        <p style="margin-top:8px;font-style:italic;">Good luck! 🍀</p>
-                    `,
-                    msgStart: 'Click Roll Dice to start!',
-                    msgWin: '🏆 You won! Great! 🎉',
-                    msgRolling: 'Rolling...',
-                    msgRollResult: (steps, pos, extra) => `Rolled ${steps}, moved to ${pos}${extra}`,
-                    msgLadder: ' 🪜 Climbed ladder!',
-                    msgSnake: ' 🐍 Bitten by snake!',
-                    msgReset: '🔄 New game, click Roll Dice!',
-                    msgGoal: '🎯 Start at 1, first to 100 wins!',
-                    msgAlreadyWon: '🎉 You already won! Click "New Game" to play again',
-                    msgOver100: 'Over 100, stay'
-                },
-                hi: {
-                    title: '🐍 साँप और सीढ़ी',
-                    sub: 'भारत · पाकिस्तान · बांग्लादेश क्लासिक',
-                    posLabel: '📍 स्थिति',
-                    diceLabel: '🎲 पासा',
-                    rollBtn: '🎲 पासा फेंकें',
-                    resetBtn: '🔄 नया खेल',
-                    rulesBtn: '📖 नियम',
-                    startBtn: '🎯 खेल शुरू करें',
-                    closeBtn: '✕',
-                    rulesTitle: '📖 कैसे खेलें',
-                    rulesText: `
-                        <p><strong>लक्ष्य:</strong> <strong>100</strong> नंबर वर्ग पर पहुँचने वाला पहला खिलाड़ी बनें।</p>
-                        <p><strong>कैसे खेलें:</strong></p>
-                        <ul>
-                            <li><strong>पासा फेंकें</strong> क्लिक करें और 1–6 आने दें।</li>
-                            <li>आपका मोहरा उतने नंबर आगे बढ़ेगा।</li>
-                            <li>अगर आप <strong>सीढ़ी 🪜</strong> के नीचे पहुँचते हैं, तो ऊपर चढ़ जाएँ!</li>
-                            <li>अगर आप <strong>साँप 🐍</strong> के मुँह पर पहुँचते हैं, तो नीचे सरक जाएँ।</li>
-                        </ul>
-                        <p><strong>टिप:</strong> ठीक 100 पर पहुँचना जीत है। 100 से ज़्यादा आने पर रुकना पड़ता है।</p>
-                        <p style="margin-top:8px;font-style:italic;">शुभकामनाएँ! 🍀</p>
-                    `,
-                    msgStart: 'शुरू करने के लिए पासा फेंकें!',
-                    msgWin: '🏆 आप जीत गए! बहुत बढ़िया! 🎉',
-                    msgRolling: 'पासा फेंक रहे हैं...',
-                    msgRollResult: (steps, pos, extra) => `${steps} आया, ${pos} पर पहुँचे${extra}`,
-                    msgLadder: ' 🪜 सीढ़ी चढ़े!',
-                    msgSnake: ' 🐍 साँप ने काटा!',
-                    msgReset: '🔄 नया खेल, पासा फेंकें!',
-                    msgGoal: '🎯 1 से शुरू, 100 पर पहले पहुँचने वाला जीतता है!',
-                    msgAlreadyWon: '🎉 आप पहले ही जीत चुके हैं! फिर से खेलने के लिए "नया खेल" क्लिक करें',
-                    msgOver100: '100 से अधिक, रुकें'
-                },
-                ur: {
-                    title: '🐍 سانپ اور سیڑھی',
-                    sub: 'ہندوستان · پاکستان · بنگلہ دیش کلاسک',
-                    posLabel: '📍 پوزیشن',
-                    diceLabel: '🎲 پاسا',
-                    rollBtn: '🎲 پاسا پھینکیں',
-                    resetBtn: '🔄 نیا کھیل',
-                    rulesBtn: '📖 قواعد',
-                    startBtn: '🎯 کھیل شروع کریں',
-                    closeBtn: '✕',
-                    rulesTitle: '📖 کیسے کھیلیں',
-                    rulesText: `
-                        <p><strong>مقصد:</strong> سب سے پہلے <strong>100</strong> والے خانے تک پہنچنے والا کھلاڑی بنیں۔</p>
-                        <p><strong>کیسے کھیلیں:</strong></p>
-                        <ul>
-                            <li><strong>پاسا پھینکیں</strong> پر کلک کریں اور 1–6 حاصل کریں۔</li>
-                            <li>آپ کا مہرہ اتنی ہی تعداد آگے بڑھے گا۔</li>
-                            <li>اگر آپ <strong>سیڑھی 🪜</strong> کے نیچے پہنچتے ہیں تو اوپر چڑھ جائیں!</li>
-                            <li>اگر آپ <strong>سانپ 🐍</strong> کے سر پر پہنچتے ہیں تو نیچے پھسل جائیں۔</li>
-                        </ul>
-                        <p><strong>نوٹ:</strong> بالکل 100 پر پہنچنا جیت ہے۔ 100 سے زیادہ آنے پر رکنا پڑتا ہے۔</p>
-                        <p style="margin-top:8px;font-style:italic;">خوش قسمتی! 🍀</p>
-                    `,
-                    msgStart: 'شروع کرنے کے لیے پاسا پھینکیں!',
-                    msgWin: '🏆 آپ جیت گئے! بہت عمدہ! 🎉',
-                    msgRolling: 'پاسا پھینک رہے ہیں...',
-                    msgRollResult: (steps, pos, extra) => `${steps} آیا، ${pos} پر پہنچے${extra}`,
-                    msgLadder: ' 🪜 سیڑھی چڑھے!',
-                    msgSnake: ' 🐍 سانپ نے کاٹا!',
-                    msgReset: '🔄 نیا کھیل، پاسا پھینکیں!',
-                    msgGoal: '🎯 1 سے شروع، 100 پر پہلے پہنچنے والا جیتتا ہے!',
-                    msgAlreadyWon: '🎉 آپ پہلے ہی جیت چکے ہیں! دوبارہ کھیلنے کے لیے "نیا کھیل" کلک کریں',
-                    msgOver100: '100 سے زیادہ، رکیں'
-                },
-                bn: {
-                    title: '🐍 সাপ ও সিঁড়ি',
-                    sub: 'ভারত · পাকিস্তান · বাংলাদেশ ক্লাসিক',
-                    posLabel: '📍 অবস্থান',
-                    diceLabel: '🎲 পাশা',
-                    rollBtn: '🎲 পাশা ছুঁড়ুন',
-                    resetBtn: '🔄 নতুন খেলা',
-                    rulesBtn: '📖 নিয়ম',
-                    startBtn: '🎯 খেলা শুরু করুন',
-                    closeBtn: '✕',
-                    rulesTitle: '📖 কীভাবে খেলবেন',
-                    rulesText: `
-                        <p><strong>লক্ষ্য:</strong> প্রথম খেলোয়াড় হয়ে <strong>১০০</strong> নম্বর ঘরে পৌঁছান।</p>
-                        <p><strong>কীভাবে খেলবেন:</strong></p>
-                        <ul>
-                            <li><strong>পাশা ছুঁড়ুন</strong> ক্লিক করুন এবং ১–৬ আনুন।</li>
-                            <li>আপনার গুটি সে সংখ্যা এগিয়ে যাবে।</li>
-                            <li>আপনি যদি <strong>সিঁড়ি 🪜</strong> এর নিচে পড়েন, উপরে উঠুন!</li>
-                            <li>আপনি যদি <strong>সাপ 🐍</strong> এর মাথায় পড়েন, নিচে সরে যান।</li>
-                        </ul>
-                        <p><strong>টিপ:</strong> ঠিক ১০০-এ পৌঁছানোই জয়। ১০০-এর বেশি এলে স্থির থাকুন।</p>
-                        <p style="margin-top:8px;font-style:italic;">শুভকামনা! 🍀</p>
-                    `,
-                    msgStart: 'শুরু করতে পাশা ছুঁড়ুন!',
-                    msgWin: '🏆 আপনি জিতেছেন! অসাধারণ! 🎉',
-                    msgRolling: 'পাশা ছুঁড়ছি...',
-                    msgRollResult: (steps, pos, extra) => `${steps} পড়ল, ${pos} এ গেলেন${extra}`,
-                    msgLadder: ' 🪜 সিঁড়ি বেয়ে উঠলেন!',
-                    msgSnake: ' 🐍 সাপে কামড় দিল!',
-                    msgReset: '🔄 নতুন খেলা, পাশা ছুঁড়ুন!',
-                    msgGoal: '🎯 ১ থেকে শুরু, ১০০-এ প্রথম পৌঁছানো জেতে!',
-                    msgAlreadyWon: '🎉 আপনি ইতিমধ্যে জিতেছেন! আবার খেলতে "নতুন খেলা" ক্লিক করুন',
-                    msgOver100: '১০০-এর বেশি, থাকুন'
-                }
-            };
+    <button class="btn" id="rollBtn">🎲 Roll Dice</button>
+    <button class="btn btn-secondary" id="resetBtn" style="margin-top:8px;">🔄 New Game</button>
+    <div class="message-box" id="message">Player 1 starts</div>
 
-            const DEFAULT_LOCALE = 'en';
-            let currentLocale = DEFAULT_LOCALE;
+    <!-- 获胜弹窗 -->
+    <div class="winner-overlay" id="winnerOverlay">
+        <h2 id="winnerTitle">🏆 Winner!</h2>
+        <p id="winnerDesc">Player 1 wins!</p>
+        <button class="btn" id="winnerResetBtn" style="max-width: 200px;">🔄 Play Again</button>
+    </div>
+</div>
 
-            // ---------- 获取用户locale ----------
-            function resolveLocale() {
-                const q = new URLSearchParams(location.search).get('locale');
-                if (q) return q;
-                if (window.__parrot && window.__parrot.locale) return window.__parrot.locale;
-                return DEFAULT_LOCALE;
+<script>
+    (function() {
+        // ---------- 多语言 ----------
+        const LANG = {
+            en: {
+                title: '🐍 Snakes & Ladders',
+                sub: '2 Players · Classic',
+                turnText: (p) => `Player ${p}`,
+                player1: 'Player 1',
+                player2: 'Player 2',
+                rollBtn: '🎲 Roll Dice',
+                resetBtn: '🔄 New Game',
+                winnerTitle: '🏆 Winner!',
+                winnerDesc: (p) => `Player ${p} wins!`,
+                msgStart: 'Player 1 starts',
+                msgRolling: 'Rolling...',
+                msgRollResult: (p, steps, pos, extra) => `P${p} rolled ${steps}, moved to ${pos}${extra}`,
+                msgLadder: ' 🪜 Climb!',
+                msgSnake: ' 🐍 Slide!',
+                msgAlreadyWon: 'Game already won, click "New Game"',
+                msgTurn: (p) => `Player ${p}'s turn`
+            },
+            hi: {
+                title: '🐍 साँप और सीढ़ी',
+                sub: '2 खिलाड़ी · क्लासिक',
+                turnText: (p) => `खिलाड़ी ${p}`,
+                player1: 'खिलाड़ी 1',
+                player2: 'खिलाड़ी 2',
+                rollBtn: '🎲 पासा फेंकें',
+                resetBtn: '🔄 नया खेल',
+                winnerTitle: '🏆 विजेता!',
+                winnerDesc: (p) => `खिलाड़ी ${p} जीत गया!`,
+                msgStart: 'खिलाड़ी 1 शुरू करेगा',
+                msgRolling: 'पासा फेंक रहे हैं...',
+                msgRollResult: (p, steps, pos, extra) => `P${p} ने ${steps} फेंका, ${pos} पर पहुँचे${extra}`,
+                msgLadder: ' 🪜 चढ़े!',
+                msgSnake: ' 🐍 फिसले!',
+                msgAlreadyWon: 'खेल जीत चुका है, "नया खेल" क्लिक करें',
+                msgTurn: (p) => `खिलाड़ी ${p} की बारी`
+            },
+            ur: {
+                title: '🐍 سانپ اور سیڑھی',
+                sub: '2 کھلاڑی · کلاسک',
+                turnText: (p) => `کھلاڑی ${p}`,
+                player1: 'کھلاڑی 1',
+                player2: 'کھلاڑی 2',
+                rollBtn: '🎲 پاسا پھینکیں',
+                resetBtn: '🔄 نیا کھیل',
+                winnerTitle: '🏆 فاتح!',
+                winnerDesc: (p) => `کھلاڑی ${p} جیت گیا!`,
+                msgStart: 'کھلاڑی 1 شروع کرے گا',
+                msgRolling: 'پاسا پھینک رہے ہیں...',
+                msgRollResult: (p, steps, pos, extra) => `P${p} نے ${steps} پھینکا، ${pos} پر پہنچے${extra}`,
+                msgLadder: ' 🪜 چڑھے!',
+                msgSnake: ' 🐍 پھسلے!',
+                msgAlreadyWon: 'کھیل جیت چکا ہے، "نیا کھیل" کلک کریں',
+                msgTurn: (p) => `کھلاڑی ${p} کی باری`
+            },
+            bn: {
+                title: '🐍 সাপ ও সিঁড়ি',
+                sub: '২ খেলোয়াড় · ক্লাসিক',
+                turnText: (p) => `খেলোয়াড় ${p}`,
+                player1: 'খেলোয়াড় ১',
+                player2: 'খেলোয়াড় ২',
+                rollBtn: '🎲 পাশা ছুঁড়ুন',
+                resetBtn: '🔄 নতুন খেলা',
+                winnerTitle: '🏆 বিজয়ী!',
+                winnerDesc: (p) => `খেলোয়াড় ${p} জিতেছে!`,
+                msgStart: 'খেলোয়াড় ১ শুরু করবে',
+                msgRolling: 'পাশা ছুঁড়ছি...',
+                msgRollResult: (p, steps, pos, extra) => `P${p} ${steps} পেল, ${pos} এ গেল${extra}`,
+                msgLadder: ' 🪜 উঠল!',
+                msgSnake: ' 🐍 নেমে গেল!',
+                msgAlreadyWon: 'খেলা জিতেছে, "নতুন খেলা" ক্লিক করুন',
+                msgTurn: (p) => `খেলোয়াড় ${p} এর পালা`
             }
-            function normalize(locale) {
-                if (!locale) return DEFAULT_LOCALE;
-                const lang = locale.split('-')[0].toLowerCase();
-                return LANG[lang] ? lang : DEFAULT_LOCALE;
-            }
+        };
 
-            function t(key, ...args) {
-                const dict = LANG[currentLocale] || LANG[DEFAULT_LOCALE];
-                const val = dict[key];
-                if (typeof val === 'function') return val(...args);
-                return val || key;
-            }
+        const DEFAULT_LOCALE = 'en';
+        let currentLocale = DEFAULT_LOCALE;
 
-            // ---------- DOM ----------
-            const boardEl = document.getElementById('board');
-            const posDisplay = document.getElementById('posDisplay');
-            const diceDisplay = document.getElementById('diceDisplay');
-            const diceFace = document.getElementById('diceFace');
-            const rollBtn = document.getElementById('rollBtn');
-            const resetBtn = document.getElementById('resetBtn');
-            const rulesBtn = document.getElementById('rulesBtn');
-            const messageEl = document.getElementById('message');
-            const gameTitle = document.getElementById('gameTitle');
-            const subTitle = document.getElementById('subTitle');
-            const posLabel = document.getElementById('posLabel');
-            const diceLabel = document.getElementById('diceLabel');
+        function resolveLocale() {
+            const q = new URLSearchParams(location.search).get('locale');
+            if (q) return q;
+            if (window.__parrot && window.__parrot.locale) return window.__parrot.locale;
+            return DEFAULT_LOCALE;
+        }
+        function normalize(locale) {
+            if (!locale) return DEFAULT_LOCALE;
+            const lang = locale.split('-')[0].toLowerCase();
+            return LANG[lang] ? lang : DEFAULT_LOCALE;
+        }
+        function t(key, ...args) {
+            const dict = LANG[currentLocale] || LANG[DEFAULT_LOCALE];
+            const val = dict[key];
+            if (typeof val === 'function') return val(...args);
+            return val || key;
+        }
 
-            // 规则弹窗
-            const overlay = document.getElementById('rulesOverlay');
-            const closeRulesBtn = document.getElementById('closeRulesBtn');
-            const startGameBtn = document.getElementById('startGameBtn');
-            const rulesTitle = document.getElementById('rulesTitle');
-            const rulesContent = document.getElementById('rulesContent');
+        // ---------- DOM ----------
+        const boardEl = document.getElementById('board');
+        const diceFace = document.getElementById('diceFace');
+        const diceDisplay = document.getElementById('diceDisplay');
+        const rollBtn = document.getElementById('rollBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const messageEl = document.getElementById('message');
+        const turnText = document.getElementById('turnText');
+        const winnerOverlay = document.getElementById('winnerOverlay');
+        const winnerTitle = document.getElementById('winnerTitle');
+        const winnerDesc = document.getElementById('winnerDesc');
+        const winnerResetBtn = document.getElementById('winnerResetBtn');
+        const gameTitle = document.getElementById('gameTitle');
+        const subTitle = document.getElementById('subTitle');
 
-            // ---------- 游戏状态 ----------
-            let playerPos = 1;
-            let isMoving = false;
-            const DICE_FACES = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
+        // ---------- 游戏状态 ----------
+        const DICE_FACES = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
+        const LADDERS = { 2:23, 6:45, 20:59, 52:69, 57:96, 71:92, 80:99 };
+        const SNAKES = { 17:7, 54:34, 62:19, 64:60, 87:24, 93:73, 95:75, 98:78 };
 
-            const LADDERS = { 2:23, 6:45, 20:59, 52:69, 57:96, 71:92, 80:99 };
-            const SNAKES = { 17:7, 54:34, 62:19, 64:60, 87:24, 93:73, 95:75, 98:78 };
+        let players = [1, 1]; // 两个玩家的位置 (索引0: P1, 索引1: P2)
+        let currentPlayer = 0; // 0: P1, 1: P2
+        let gameOver = false;
+        let isRolling = false;
 
-            // ---------- 棋盘构建 ----------
-            function buildBoard() {
-                boardEl.innerHTML = '';
-                for (let row = 9; row >= 0; row--) {
-                    for (let col = 0; col < 10; col++) {
-                        let number;
-                        if (row % 2 === 0) number = row * 10 + col + 1;
-                        else number = row * 10 + (10 - col);
-                        const cell = document.createElement('div');
-                        cell.className = 'cell';
-                        cell.dataset.number = number;
-                        const numSpan = document.createElement('span');
-                        numSpan.className = 'num';
-                        numSpan.textContent = number;
-                        cell.appendChild(numSpan);
-                        if (LADDERS[number]) {
-                            cell.classList.add('ladder');
-                            const icon = document.createElement('span');
-                            icon.className = 'icon-indicator';
-                            icon.textContent = '🪜';
-                            cell.appendChild(icon);
-                        } else if (SNAKES[number]) {
-                            cell.classList.add('snake');
-                            const icon = document.createElement('span');
-                            icon.className = 'icon-indicator';
-                            icon.textContent = '🐍';
-                            cell.appendChild(icon);
-                        }
-                        boardEl.appendChild(cell);
+        // ---------- 构建棋盘 ----------
+        function buildBoard() {
+            boardEl.innerHTML = '';
+            for (let row = 9; row >= 0; row--) {
+                for (let col = 0; col < 10; col++) {
+                    let number;
+                    if (row % 2 === 0) number = row * 10 + col + 1;
+                    else number = row * 10 + (10 - col);
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
+                    cell.dataset.number = number;
+                    const numSpan = document.createElement('span');
+                    numSpan.className = 'num';
+                    numSpan.textContent = number;
+                    cell.appendChild(numSpan);
+                    if (LADDERS[number]) {
+                        cell.classList.add('ladder');
+                        const icon = document.createElement('span');
+                        icon.className = 'icon-indicator';
+                        icon.textContent = '🪜';
+                        cell.appendChild(icon);
+                    } else if (SNAKES[number]) {
+                        cell.classList.add('snake');
+                        const icon = document.createElement('span');
+                        icon.className = 'icon-indicator';
+                        icon.textContent = '🐍';
+                        cell.appendChild(icon);
                     }
+                    boardEl.appendChild(cell);
                 }
             }
+        }
 
-            function getCell(num) { return boardEl.querySelector(`.cell[data-number="${num}"]`); }
+        function getCell(num) { return boardEl.querySelector(`.cell[data-number="${num}"]`); }
 
-            function updatePiece() {
-                document.querySelectorAll('.cell .piece').forEach(el => el.remove());
-                const cell = getCell(playerPos);
-                if (!cell) return;
-                const piece = document.createElement('div');
-                piece.className = 'piece';
-                piece.textContent = '⭐';
-                cell.appendChild(piece);
-                posDisplay.textContent = playerPos;
+        function updatePieces() {
+            document.querySelectorAll('.cell .piece').forEach(el => el.remove());
+            // 玩家1
+            const p1cell = getCell(players[0]);
+            if (p1cell) {
+                const piece1 = document.createElement('div');
+                piece1.className = 'piece p1';
+                piece1.textContent = '⭐';
+                p1cell.appendChild(piece1);
             }
+            // 玩家2
+            const p2cell = getCell(players[1]);
+            if (p2cell) {
+                const piece2 = document.createElement('div');
+                piece2.className = 'piece p2';
+                piece2.textContent = '🔵';
+                p2cell.appendChild(piece2);
+            }
+        }
 
-            // ---------- 掷骰子 ----------
-            function rollDice() {
-                if (isMoving) return;
-                if (playerPos >= 100) {
-                    messageEl.textContent = t('msgAlreadyWon');
-                    return;
+        // ---------- UI 更新 ----------
+        function updateUI() {
+            updatePieces();
+            // 更新回合指示
+            if (!gameOver) {
+                const playerName = currentPlayer === 0 ? t('player1') : t('player2');
+                turnText.textContent = playerName;
+            }
+            // 消息中显示当前回合
+            if (!gameOver && !isRolling) {
+                const pName = currentPlayer === 0 ? t('player1') : t('player2');
+                messageEl.textContent = t('msgTurn', currentPlayer+1);
+            }
+        }
+
+        // ---------- 掷骰子（带动画） ----------
+        function rollDice() {
+            if (isRolling || gameOver) return;
+
+            isRolling = true;
+            rollBtn.disabled = true;
+            messageEl.textContent = t('msgRolling');
+
+            // 模拟滚动动画 (快速切换骰子面)
+            let rollCount = 0;
+            const maxRolls = 8;
+            const interval = setInterval(() => {
+                const randomVal = Math.floor(Math.random() * 6) + 1;
+                diceFace.textContent = DICE_FACES[randomVal-1];
+                diceDisplay.textContent = randomVal;
+                rollCount++;
+                if (rollCount >= maxRolls) {
+                    clearInterval(interval);
+                    // 最终结果
+                    const steps = Math.floor(Math.random() * 6) + 1;
+                    diceFace.textContent = DICE_FACES[steps-1];
+                    diceDisplay.textContent = steps;
+                    // 处理移动
+                    finishRoll(steps);
                 }
-                isMoving = true;
+            }, 80);
+        }
+
+        function finishRoll(steps) {
+            const playerIdx = currentPlayer;
+            let newPos = players[playerIdx] + steps;
+            let extra = '';
+            if (newPos > 100) {
+                // 超过100，不动
+                extra = ' (overshoot)';
+                newPos = players[playerIdx];
+            } else {
+                if (LADDERS[newPos]) {
+                    newPos = LADDERS[newPos];
+                    extra = t('msgLadder');
+                } else if (SNAKES[newPos]) {
+                    newPos = SNAKES[newPos];
+                    extra = t('msgSnake');
+                }
+            }
+            players[playerIdx] = newPos;
+            updatePieces();
+
+            const pNum = playerIdx + 1;
+            const msg = t('msgRollResult', pNum, steps, newPos, extra);
+            messageEl.textContent = msg;
+
+            // 检查胜利
+            if (players[playerIdx] === 100) {
+                gameOver = true;
+                const winnerName = playerIdx === 0 ? t('player1') : t('player2');
+                winnerTitle.textContent = t('winnerTitle');
+                winnerDesc.textContent = t('winnerDesc', pNum);
+                winnerOverlay.classList.add('show');
                 rollBtn.disabled = true;
-                messageEl.textContent = t('msgRolling');
-
-                const steps = Math.floor(Math.random() * 6) + 1;
-                const diceChar = DICE_FACES[steps-1];
-                diceFace.textContent = diceChar;
-                diceDisplay.textContent = steps;
-
-                let newPos = playerPos + steps;
-                let extra = '';
-                if (newPos > 100) {
-                    // 超过100，原地不动
-                    extra = t('msgOver100');
-                    newPos = playerPos;
-                } else {
-                    if (LADDERS[newPos]) {
-                        newPos = LADDERS[newPos];
-                        extra = t('msgLadder');
-                    } else if (SNAKES[newPos]) {
-                        newPos = SNAKES[newPos];
-                        extra = t('msgSnake');
-                    }
-                }
-                playerPos = newPos;
-                updatePiece();
-
-                const resultMsg = t('msgRollResult', steps, playerPos, extra);
-                messageEl.textContent = resultMsg;
-
-                if (playerPos === 100) {
-                    messageEl.textContent = t('msgWin');
-                    rollBtn.disabled = true;
-                    isMoving = false;
-                    return;
-                }
-
-                setTimeout(() => {
-                    isMoving = false;
-                    rollBtn.disabled = false;
-                }, 400);
+                isRolling = false;
+                return;
             }
 
-            // ---------- 重置 ----------
-            function resetGame() {
-                if (isMoving) return;
-                playerPos = 1;
-                updatePiece();
-                diceFace.textContent = '⚀';
-                diceDisplay.textContent = '-';
-                messageEl.textContent = t('msgReset');
+            // 切换玩家
+            currentPlayer = (currentPlayer + 1) % 2;
+            updateUI();
+
+            // 恢复按钮
+            setTimeout(() => {
+                isRolling = false;
                 rollBtn.disabled = false;
-                isMoving = false;
-            }
+            }, 300);
+        }
 
-            // ---------- 语言应用 ----------
-            function applyLocale(locale) {
-                currentLocale = normalize(locale);
-                gameTitle.textContent = t('title');
-                subTitle.textContent = t('sub');
-                posLabel.textContent = t('posLabel');
-                diceLabel.textContent = t('diceLabel');
-                rollBtn.textContent = t('rollBtn');
-                resetBtn.textContent = t('resetBtn');
-                rulesBtn.textContent = t('rulesBtn');
-                startGameBtn.textContent = t('startBtn');
-                closeRulesBtn.textContent = t('closeBtn');
-                rulesTitle.textContent = t('rulesTitle');
-                rulesContent.innerHTML = t('rulesText');
-                // 更新消息（若在初始状态）
-                if (playerPos === 1 && !isMoving) {
-                    messageEl.textContent = t('msgStart');
-                } else if (playerPos === 100) {
-                    messageEl.textContent = t('msgWin');
-                } else {
-                    // 保留当前消息
+        // ---------- 重置游戏 ----------
+        function resetGame() {
+            players = [1, 1];
+            currentPlayer = 0;
+            gameOver = false;
+            isRolling = false;
+            rollBtn.disabled = false;
+            winnerOverlay.classList.remove('show');
+            diceFace.textContent = '⚀';
+            diceDisplay.textContent = '-';
+            updatePieces();
+            updateUI();
+            messageEl.textContent = t('msgStart');
+        }
+
+        // ---------- 应用语言 ----------
+        function applyLocale(locale) {
+            currentLocale = normalize(locale);
+            gameTitle.textContent = t('title');
+            subTitle.textContent = t('sub');
+            rollBtn.textContent = t('rollBtn');
+            resetBtn.textContent = t('resetBtn');
+            // 更新回合文字
+            if (!gameOver) {
+                const pName = currentPlayer === 0 ? t('player1') : t('player2');
+                turnText.textContent = pName;
+            }
+            if (!gameOver && !isRolling) {
+                messageEl.textContent = t('msgTurn', currentPlayer+1);
+            } else if (gameOver) {
+                // 保持获胜信息
+            } else {
+                // 保留当前消息
+            }
+            // 如果获胜弹窗显示，也更新
+            if (winnerOverlay.classList.contains('show')) {
+                // 更新获胜文本 (需要知道赢家)
+                // 简单处理：重新从状态读取
+                const winnerIdx = players[0] === 100 ? 0 : (players[1] === 100 ? 1 : -1);
+                if (winnerIdx !== -1) {
+                    winnerTitle.textContent = t('winnerTitle');
+                    winnerDesc.textContent = t('winnerDesc', winnerIdx+1);
                 }
             }
+        }
 
-            // ---------- 规则弹窗控制 ----------
-            function showRules() {
-                overlay.classList.remove('hidden');
-            }
-            function hideRules() {
-                overlay.classList.add('hidden');
-            }
+        // ---------- 初始化 ----------
+        function init() {
+            const locale = resolveLocale();
+            applyLocale(locale);
+            buildBoard();
+            resetGame();
 
-            // ---------- 初始化 ----------
-            function init() {
-                const locale = resolveLocale();
-                applyLocale(locale);
-                buildBoard();
-                updatePiece();
-                messageEl.textContent = t('msgStart');
+            rollBtn.addEventListener('click', rollDice);
+            resetBtn.addEventListener('click', resetGame);
+            winnerResetBtn.addEventListener('click', resetGame);
+        }
 
-                // 首次加载默认显示规则（吸引注意力）
-                showRules();
-
-                // 事件绑定
-                rollBtn.addEventListener('click', rollDice);
-                resetBtn.addEventListener('click', resetGame);
-                rulesBtn.addEventListener('click', showRules);
-                closeRulesBtn.addEventListener('click', hideRules);
-                startGameBtn.addEventListener('click', hideRules);
-                // 点击遮罩可关闭（可选）
-                overlay.addEventListener('click', function(e) {
-                    if (e.target === overlay) hideRules();
-                });
-            }
-
-            init();
-        })();
-    </script>
+        init();
+    })();
+</script>
 </body>
 </html>
